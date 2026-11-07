@@ -25,6 +25,24 @@ jobs:
       run: chmod +x gradlew
 
     - name: Build with Gradle
-      # Флаг -x lint принудительно отключает все задачи статического анализатора (включая lintDebug), блокировавшие процесс
-      run: ./gradlew build -x lint
-      
+      # Компилируем приложение и отключаем падение на проверках Lint
+      run: ./gradlew assembleDebug -x lint
+
+    - name: Run Tests
+      # Запускаем тесты сразу после успешной сборки (игнорируя Lint)
+      run: ./gradlew test -x lint
+
+    - name: Create ZIP Archive
+      # Пакуем готовые скомпилированные APK файлы в один ZIP-архив
+      run: |
+        mkdir -p dist
+        zip -r dist/renjana-build.zip app/build/outputs/apk/
+
+    - name: Upload Build Artifact (ZIP)
+      # Загружаем созданный ZIP в GitHub Actions, чтобы его можно было скачать
+      uses: actions/upload-artifact@v4
+      with:
+        name: renjana-apks
+        path: dist/renjana-build.zip
+        retention-days: 7
+        
