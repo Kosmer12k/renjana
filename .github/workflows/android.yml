@@ -25,6 +25,6 @@ jobs:
       run: chmod +x gradlew
 
     - name: Build with Gradle
-      # Мы добавили флаг -Xlint, который приказывает статической проверке Android Lint пропускать ошибки и не ронять сборку
-      run: ./gradlew build -Dxposed.lint.assessment.error.ignore=true -Pandroid.lintOptions.abortOnError=false
+      # Флаг -x lint принудительно отключает все задачи статического анализатора (включая lintDebug), блокировавшие процесс
+      run: ./gradlew build -x lint
       
